@@ -1,0 +1,219 @@
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>알림 - JoiNer</title> {# base.html의 block title에 page_title이 들어감 #}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> {# Font Awesome 추가 시 #}
+    <style>
+        /* 위에 제공된 notice.html의 <style> 태그 내용이 여기에 있다고 가정 */
+        /* 전체 페이지 컨테이너 */
+        .notice-page-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f7fbfd;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .notice-header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #343a40;
+            font-size: 2.2em;
+            font-weight: bold;
+            border-bottom: 2px solid #3a5b70;
+            padding-bottom: 20px;
+        }
+
+        /* 날짜별 알림 그룹 */
+        .notification-group {
+            margin-bottom: 30px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .notification-date {
+            background-color: #eaf5ff;
+            color: #495057;
+            font-size: 1.1em;
+            padding: 12px 20px;
+            font-weight: bold;
+            border-bottom: 1px solid #5b7fa6;
+        }
+
+        .notification-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .notification-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f1f3f5;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s ease;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-item:hover {
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .notification-icon {
+            color: #007bff;
+            margin-right: 15px;
+            font-size: 1.3em;
+        }
+
+        .notification-content {
+            flex-grow: 1;
+        }
+
+        .notification-content a {
+            color: #343a40;
+            text-decoration: none;
+            font-size: 1em;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .notification-content a:hover {
+            color: #007bff;
+            text-decoration: underline;
+        }
+
+        .notification-status {
+            font-size: 0.85em;
+            padding: 4px 8px;
+            border-radius: 5px;
+            margin-left: 15px;
+            white-space: nowrap; /* 줄바꿈 방지 */
+        }
+
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-completed {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .no-notifications {
+            text-align: center;
+            color: #6c757d;
+            padding: 50px 20px;
+            font-size: 1.1em;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .back-to-main-btn {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 5px 10px;
+        background-color: #f7fbfd;
+        color: #0062cc;
+        border: 1px solid #ffffff;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 25px;
+        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    }
+    .back-to-main-btn:hover {
+        background-color: #c8e4ff;
+        color: #004691;
+    }
+    .back-to-main-btn:visited {
+        color: #0062cc;
+    }
+
+    </style>
+</head>
+<body>
+
+    <div class="notice-page-container">
+        <a href="{% url 'main_page' %}" class="back-to-main-btn">🏠︎</a>
+        <h1 class="notice-header">알림</h1>
+
+        <div class="notification-group">
+            <div class="notification-date">2025년 5월 30일</div>
+            <ul class="notification-list">
+                <li class="notification-item">
+                    <span class="notification-icon">🔔</span>
+                    <div class="notification-content">
+                        <a href="#">[사이드 프로젝트] 프론트엔드 팀원 모집</a>
+                    </div>
+                    <span class="notification-status status-active">모집중</span>
+                </li>
+                <li class="notification-item">
+                    <span class="notification-icon">🔔</span>
+                    <div class="notification-content">
+                        <a href="#">프론트엔드 UI/UX 디자이너 찾아요</a>
+                    </div>
+                    <span class="notification-status status-active">모집중</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="notification-group">
+            <div class="notification-date">2025년 5월 29일</div>
+            <ul class="notification-list">
+                <li class="notification-item">
+                    <span class="notification-icon">🔔</span>
+                    <div class="notification-content">
+                        <a href="#">취준용 포트폴리오 만드실분 구해요</a>
+                    </div>
+                    <span class="notification-status status-active">모집중</span>
+                </li>
+                <li class="notification-item">
+                    <span class="notification-icon">🔔</span>
+                    <div class="notification-content">
+                        <a href="#">🎮 프론트엔드 개발자 모집</a>
+                    </div>
+                    <span class="notification-status status-active">모집중</span>
+                </li>
+                 <li class="notification-item">
+                    <span class="notification-icon">🔔</span>
+                    <div class="notification-content">
+                        <a href="#">오픈소스 개발자대회 (지정과제 - 사회문제형) 대학생 팀원 모집합니다.</a>
+                    </div>
+                    <span class="notification-status status-active">모집중</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="notification-group">
+            <div class="notification-date">2025년 5월 28일</div>
+            <ul class="notification-list">
+                <li class="notification-item">
+                    <span class="notification-icon">🔔</span>
+                    <div class="notification-content">
+                        <a href="#">추억의 싸이월드 프로젝트 (기억ㄴr니 그때 그 시절…)</a>
+                    </div>
+                    <span class="notification-status status-completed">모집완료</span>
+                </li>
+            </ul>
+        </div>
+
+
+    </div>
+</body>
+</html>

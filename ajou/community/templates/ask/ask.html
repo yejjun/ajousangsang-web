@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>질문 목록</title> {# 페이지 타이틀을 '질문 목록'으로 변경 #}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/ask_page_style.css' %}">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f2f5;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 50px auto;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* 질문 목록 스타일 */
+        .question-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+        }
+        .question-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .question-item:last-child {
+            border-bottom: none; /* 마지막 아이템에는 하단 선 제거 */
+        }
+        .question-title {
+            font-size: 1.2em;
+            color: #007bff;
+            margin-bottom: 5px;
+            text-decoration: none; /* 링크의 밑줄 제거 */
+            font-weight: bold;
+        }
+        .question-title:hover {
+            text-decoration: underline; /* 호버 시 밑줄 표시 */
+        }
+        .question-content {
+            color: #555;
+            font-size: 0.95em;
+            margin-bottom: 5px;
+            white-space: pre-wrap; /* 줄바꿈 유지 */
+        }
+        .question-meta {
+            font-size: 0.8em;
+            color: #888;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>질문 목록</h1> {# 제목 변경 #}
+        <a href="{% url 'community_page' %}" class="back-link">커뮤니티 메인으로 돌아가기</a>
+
+        {# 질문 목록이 표시될 부분 #}
+        <ul class="question-list">
+            {% for question in questions %} {# 뷰에서 전달받은 'questions' 리스트를 순회 #}
+            <li class="question-item">
+                {# 각 질문 상세 페이지로 이동하는 링크 (현재는 없으므로 #으로 대체) #}
+                <a href="https://kin.naver.com/" class="question-title">{{ question.title }}</a>
+                <p class="question-content">{{ question.content|truncatechars:150 }}</p> {# 내용이 길면 150자로 자름 #}
+                <p class="question-meta">작성일: {{ question.created_at|date:"Y.m.d H:i" }}</p>
+            </li>
+            {% empty %} {# questions 리스트가 비어있을 경우 #}
+            <li class="question-item">
+                <p>아직 질문이 없습니다.</p>
+            </li>
+            {% endfor %}
+        </ul>
+
+        {# '질문 등록' 폼을 페이지 하단에 배치하거나, 별도 버튼으로 분리 가능 #}
+        <h2>새 질문 등록</h2>
+        <form method="post" action="{% url 'ask_question_submit' %}"> {# 나중에 질문 등록 처리할 URL로 변경 #}
+            {% csrf_token %} {# Django 폼 보안을 위한 필수 태그 #}
+            <label for="id_title">제목:</label><br>
+            <input type="text" id="id_title" name="title" style="width: 100%; padding: 8px; margin-bottom: 10px;" required><br>
+            <label for="id_content">내용:</label><br>
+            <textarea id="id_content" name="content" rows="5" style="width: 100%; padding: 8px;" required></textarea><br>
+            <button type="submit" style="background-color: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin-top: 15px;">질문 등록하기</button>
+        </form>
+    </div>
+</body>
+</html>

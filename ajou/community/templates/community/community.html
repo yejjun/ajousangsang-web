@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<style>
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* 뷰포트 전체 높이를 차지 */
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box; /* 패딩이 너비에 포함되도록 */
+}
+
+.community-intro-container {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+}
+
+.welcome-message {
+    font-size: 2.0em; /* 폰트 크기 증가 */
+    color: #333;
+    margin-bottom: 5px; /* 메시지와 버튼 그룹 사이 간격 */
+    line-height: 1.6;
+    font-weight: bold; /* 메시지를 더 강조 */
+}
+.welcome-message-small {
+    font-size: 1.0em; /* 폰트 크기 증가 */
+    color: #5e5e5e;
+    margin-bottom: 20px; /* 메시지와 버튼 그룹 사이 간격 */
+    line-height: 1.6;
+
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column; /* 버튼을 세로로 정렬 */
+    gap: 15px; /* 버튼 간 간격 */
+}
+
+.intro-button {
+    display: inline-block; /* 버튼처럼 보이도록 */
+    background-color: #007bff;
+    color: white;
+    padding: 15px 25px; /* 버튼 패딩 증가 */
+    border: none;
+    border-radius: 8px; /* 버튼 모서리 둥글게 */
+    font-size: 1.1em; /* 버튼 폰트 크기 증가 */
+    font-weight: bold;
+    text-decoration: none; /* 링크 밑줄 제거 */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    width: 100%; /* 버튼 너비 100% */
+    box-sizing: border-box;
+}
+
+.intro-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-3px); /* 호버 시 약간 위로 이동 */
+}
+
+.intro-button:active {
+    background-color: #004085;
+    transform: translateY(0); /* 클릭 시 원위치 */
+}
+
+/* 작은 화면을 위한 반응형 디자인 */
+@media (max-width: 600px) {
+    .community-intro-container {
+        padding: 30px;
+        margin: 10px;
+    }
+    .welcome-message {
+        font-size: 1.2em;
+    }
+    .intro-button {
+        padding: 12px 20px;
+        font-size: 1em;
+    }
+}
+
+ .back-to-main-btn {
+        margin-bottom:-20px;
+        display: inline-block;
+        padding: 5px 10px;
+        background-color: #ffffff;
+        color: #0062cc;
+        border: 1px solid #ffffff;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 25px;
+        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    }
+    .back-to-main-btn:hover {
+        background-color: #c8e4ff;
+        color: #004691;
+    }
+    .back-to-main-btn:visited {
+        color: #0062cc;
+    }
+
+</style>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>커뮤니티 환영 페이지</title>
+    <link rel="stylesheet" href="style.css"> {# CSS 파일을 외부에서 링크 #}
+</head>
+<body>
+    <div class="community-intro-container">
+         <a href="{% url 'main_page' %}" class="back-to-main-btn">🏠︎</a>
+        <p class="welcome-message"> 커뮤니티에 오신 것을 환영합니다!</p>
+        <p class="welcome-message-small"> 어떤 서비스를 찾으시나요? </p>
+        <div class="button-group">
+            <a href="{% url 'ask_page' %}" class="intro-button">질문있어요</a>
+            <a href="{% url 'together_page' %}" class="intro-button">같이해요</a>
+        </div>
+    </div>
+</body>
+</html>

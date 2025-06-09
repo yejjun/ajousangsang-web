@@ -1,0 +1,298 @@
+{% load static %}
+
+{% block title %} {% endblock %}
+
+{% block content %}
+<style>
+    /* 프로필 페이지 전체 컨테이너 */
+    .profile-page-container {
+        display: flex;
+        max-width: 1200px;
+        margin: 40px auto; /* 상하 여백, 좌우 자동 (중앙 정렬) */
+        padding: 20px;
+        gap: 30px; /* 좌측/우측 섹션 간 간격 */
+        flex-wrap: wrap; /* 작은 화면에서 요소들이 줄바꿈되도록 */
+        align-items: flex-start; /* 상단 정렬 */
+    }
+
+    /* 좌측 프로필 정보 섹션 */
+    .profile-left-section {
+        flex: 1;
+        min-width: 280px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        padding: 30px;
+        text-align: center; /* 기본적으로 중앙 정렬 */
+        box-sizing: border-box;
+    }
+
+    /* 프로필 이미지 */
+    .profile-image-wrapper {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: 0 auto 25px auto;
+        border: 2px solid #e0e0e0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .profile-image-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* 프로필 정보 텍스트 */
+    .profile-info h2 {
+        font-size: 26px;
+        color: #333;
+        margin-bottom: 5px; /* 닉네임과 이름 간 간격 */
+    }
+    .profile-info p {
+        font-size: 15px;
+        color: #555;
+        margin-bottom: 8px;
+        line-height: 1.4;
+    }
+    .profile-info .subtitle { /* 이름 (Munzzzzzi) 같은 작은 글씨 */
+        font-size: 18px;
+        color: #6a737d; /* GitHub의 서브타이틀 색상 */
+        margin-top: -5px; /* 닉네임과의 간격 줄이기 */
+        margin-bottom: 15px;
+    }
+    .profile-info .email {
+        color: #007bff;
+        font-weight: 500;
+    }
+    .profile-info .github-link {
+        margin-top: 15px;
+    }
+    .profile-info .github-link a {
+        color: #0366d6;
+        text-decoration: none;
+        font-size: 15px;
+    }
+    .profile-info .github-link a:hover {
+        text-decoration: underline;
+    }
+    .profile-info .stats {
+        margin-top: 20px;
+        font-size: 16px;
+        color: #555;
+    }
+    .profile-info .stats span {
+        font-weight: bold;
+        color: #333;
+    }
+    .profile-info .stats span:not(:last-child) {
+        margin-right: 15px;
+    }
+
+    /* 우측 컨텐츠 섹션 */
+    .profile-right-section {
+        flex: 2;
+        min-width: 600px;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        box-sizing: border-box;
+    }
+
+    /* 각 컨텐츠 박스 (프로젝트, 포트폴리오) */
+    .content-box {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        padding: 30px;
+    }
+    .content-box h3 {
+        font-size: 22px;
+        color: #333;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+
+    /* 참여 프로젝트 섹션 */
+    .project-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .project-item {
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px dashed #eee;
+    }
+    .project-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+    .project-item h4 {
+        font-size: 18px;
+        color: #007bff;
+        margin-bottom: 5px;
+    }
+    .project-item p {
+        font-size: 14px;
+        color: #666;
+        line-height: 1.5;
+    }
+    .project-item .project-date {
+        font-size: 13px;
+        color: #999;
+        margin-top: 5px;
+    }
+
+    /* 포트폴리오 섹션 */
+    .portfolio-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+    .portfolio-item {
+        background-color: #f0f0f0;
+        border-radius: 5px;
+        overflow: hidden;
+        position: relative;
+        padding-top: 100%;
+    }
+    .portfolio-item img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.2s ease-in-out;
+    }
+    .portfolio-item img:hover {
+        transform: scale(1.05);
+    }
+    .portfolio-item .placeholder {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #aaa;
+        font-size: 14px;
+        background-color: #e9ecef;
+    }
+
+    /* 메인페이지로 버튼 스타일 (login.html과 signup.html 공통) */
+    .back-to-main-btn {
+        display: inline-block;
+        margin-top: 25px;
+        padding: 10px 20px;
+        background-color: #f0f0f0;
+        color: #555;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 16px;
+        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    }
+    .back-to-main-btn:hover {
+        background-color: #e0e0e0;
+        color: #333;
+    }
+
+    /* 반응형 디자인 */
+    @media (max-width: 768px) {
+        .profile-page-container {
+            flex-direction: column;
+            align-items: center;
+        }
+        .profile-left-section,
+        .profile-right-section {
+            width: 100%;
+            min-width: unset;
+        }
+        .profile-left-section {
+            text-align: left; /* 작은 화면에서 텍스트 정렬 */
+            padding: 20px; /* 패딩 조정 */
+        }
+        .profile-image-wrapper {
+            margin: 0 0 25px 0; /* 이미지 여백 조정 */
+        }
+    }
+</style>
+
+<div class="profile-page-container">
+    {# 좌측 프로필 정보 섹션 #}
+    <div class="profile-left-section">
+        <div class="profile-image-wrapper">
+            {% if user_profile.profile_image_url %}
+                <img src="https://www.ajou.ac.kr/_res/ajou/kr/img/intro/img-symbol.gif" alt="{{ user_profile.nickname }} 프로필 사진">
+            {% else %}
+                <img src="https://www.ajou.ac.kr/_res/ajou/kr/img/intro/img-symbol.gif" alt="">
+            {% endif %}
+        </div>
+        <div class="profile-info">
+            <h2>{{ user_profile.nickname }}</h2>
+            <p class="subtitle">Munzzzzzi</p> {# GitHub처럼 닉네임 아래에 작은 이름 #}
+            <p>{{ user_profile.company_school }}</p>
+            <p class="email">{{ user_profile.email }}</p>
+            <p class="github-link"><a href="{{ user_profile.github_url }}" target="_blank">GitHub 프로필</a></p> {# GitHub 링크 #}
+            <p class="stats">
+                <span><i class="fas fa-users"></i> {{ user_profile.followers }} followers</span>
+                <span><i class="fas fa-user-plus"></i> {{ user_profile.following }} following</span>
+            <p class="hashtage">#프론트엔드     #웹     #UI/UX      #대학생      #공모전</p>
+            </p>
+
+            <p style="margin-top: 20px;">
+                <a href="{% url 'main_page' %}" class="back-to-main-btn">메인페이지로</a>
+            </p>
+        </div>
+    </div>
+
+    {# 우측 컨텐츠 섹션 #}
+    <div class="profile-right-section">
+        {# 참여 프로젝트 섹션 #}
+        <div class="content-box">
+            <h3>참여 프로젝트</h3>
+            <ul class="project-list">
+                {% if user_profile.participated_projects %}
+                    {% for project in user_profile.participated_projects %}
+                        <li class="project-item">
+                            <h4>{{ project.title }}</h4>
+                            <p>{{ project.description }}</p>
+                            <span class="project-date">{{ project.start_date }} ~ {{ project.end_date }}</span>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <p>아직 참여한 프로젝트가 없습니다.</p>
+                {% endif %}
+            </ul>
+        </div>
+
+        {# 포트폴리오 섹션 #}
+        <div class="content-box">
+            <h3>포트폴리오</h3>
+            <div class="portfolio-grid">
+                {% if user_profile.portfolio_images %}
+                    {% for image in user_profile.portfolio_images %}
+                        <div class="portfolio-item">
+                            <img src="{% static 'img/joiner_mainpage_capture.png' %}" alt="포트폴리오 이미지">
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="portfolio-item"><div class="placeholder">이미지를 추가하세요</div></div>
+                    <div class="portfolio-item"><div class="placeholder">이미지를 추가하세요</div></div>
+                    <div class="portfolio-item"><div class="placeholder">이미지를 추가하세요</div></div>
+                    <div class="portfolio-item"><div class="placeholder">이미지를 추가하세요</div></div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
