@@ -1,13 +1,12 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>같이해요</title>
-    {%load static%}
-    <link rel="stylesheet" href="{% static 'css/together_page_style.css' %}">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>같이해요 - 글 목록</title>
+    <link rel="stylesheet" href="{% static 'css/together_page_style.css' %}" />
     <style>
-        /* 이 페이지에만 특정한 스타일 */
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f0f2f5;
@@ -20,36 +19,126 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             max-width: 800px;
             margin: 50px auto;
-
         }
         h1 {
             color: #333;
             text-align: center;
             margin-bottom: 25px;
         }
-        .back-link {
-            display: block;
-            margin-top: 20px;
+        .tag-filter {
+            margin-bottom: 25px;
             text-align: center;
+        }
+        .tag-filter a {
+            display: inline-block;
+            margin: 0 8px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            background-color: #e7f1ff;
             color: #007bff;
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 600;
+            transition: background-color 0.3s;
         }
-        .back-link:hover {
+        .tag-filter a:hover {
+            background-color: #c1d9ff;
+        }
+        ul.post-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 10px;
+            border-top: 1px solid #eee;
+        }
+        li.post-item {
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        li.post-item:last-child {
+            border-bottom: none;
+        }
+        a.post-title {
+            font-size: 1.3em;
+            color: #007bff;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        a.post-title:hover {
             text-decoration: underline;
+        }
+        .post-meta {
+            font-size: 0.85em;
+            color: #888;
+            margin-top: 6px;
+        }
+        .post-tags {
+            margin-top: 8px;
+        }
+        .post-tags .tag {
+            display: inline-block;
+            background-color: #e1ecf4;
+            color: #0366d6;
+            padding: 4px 10px;
+            margin-right: 6px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+        .post-tags .tag:hover {
+            background-color: #cde3f7;
+        }
+        .write-link {
+            display: block;
+            margin-top: 30px;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+            background-color: #007bff;
+            padding: 10px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            width: 120px;
+            margin-left: auto;
+            margin-right: auto;
+            transition: background-color 0.3s;
+        }
+        .write-link:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>같이해요</h1>
-        <p>함께 할 프로젝트를 찾으시나요? 여기에서 팀원을 모집하거나 참여해보세요.</p>
-        <p>현재 모집 중인 프로젝트 목록...</p>
-        <ul>
-            <li>웹사이트 리뉴얼 (프론트엔드 개발자 모집)</li>
-            <li>모바일 앱 아이디어 구체화 (디자이너 모집)</li>
+
+        <div class="tag-filter">
+            <strong>태그:</strong>
+            {% for tag in tags %}
+                <a href="?tag={{ tag.name }}">{{ tag.name }}</a>
+            {% endfor %}
+        </div>
+
+        <ul class="post-list">
+            {% for post in posts %}
+                <li class="post-item">
+                    <a href="{% url 'together_detail' post.pk %}" class="post-title">{{ post.title }}</a>
+                    <div class="post-meta">
+                        작성자: {{ post.author }} | 작성일: {{ post.created_at|date:"Y.m.d H:i" }}
+                    </div>
+                    <div class="post-tags">
+                        {% for tag in post.tags.all %}
+                            <a href="?tag={{ tag.name }}" class="tag">{{ tag.name }}</a>
+                        {% empty %}
+                            <span>태그 없음</span>
+                        {% endfor %}
+                    </div>
+                </li>
+            {% empty %}
+                <li>게시글이 없습니다.</li>
+            {% endfor %}
         </ul>
-        <a href="{% url 'community_page'%}" class="back-link">커뮤니티 메인으로 돌아가기</a>
+
+        <a href="{% url 'together_write' %}" class="write-link">글쓰기</a>
     </div>
 </body>
 </html>

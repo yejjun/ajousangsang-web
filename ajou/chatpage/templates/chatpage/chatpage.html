@@ -1,41 +1,154 @@
-
 <!DOCTYPE html>
-<style>
-    .back-to-main-btn:hover {
-        background-color: #e0e0e0;
-        color: #333;
-    }
-
-    .back-to-main-btn {
-        display: inline-block; /* 버튼처럼 보이게 */
-        margin-top: 25px; /* 위쪽 간격 */
-        padding: 10px 20px;
-        background-color: #f0f0f0; /* 연한 회색 배경 */
-        color: #555; /* 어두운 회색 글씨 */
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        text-decoration: none; /* 밑줄 제거 */
-        font-size: 16px;
-        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-    }
-</style>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <title>DM 스타일 채팅</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>채팅 페이지</title>
-    </head>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #fafafa;
+        }
+
+        .chat-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 300px;
+            background-color: #fff;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+        }
+
+        .user {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .user:hover {
+            background-color: #f5f5f5;
+        }
+
+        .user img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .chat-box {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+        }
+
+        .chat-header {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            max-width: 60%;
+            padding: 10px;
+            border-radius: 15px;
+            background-color: #e4e6eb;
+        }
+
+        .message.me {
+            background-color: #d1e7ff;
+            align-self: flex-end;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+        }
+
+        .chat-input input {
+            flex-grow: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+
+        .chat-input button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .chat-input button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
 <body>
-    <h1>어서오세요, 채팅방입니다!</h1>
-    <p>여기에 채팅 페이지 긁어서 넣어주세요.</p>
-    <div id="chat-messages">
+    <div class="chat-container">
+        <div class="sidebar" id="user-list">
+            <!-- 유저 목록 -->
+            <div class="user" onclick="selectUser('CJ')">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPQAAADPCAMAAAD1TAyiAAABGlBMVEX/////lwAAbs3vFR4AAADuAAD/lQD/kQBvb28AZMoAYsohISH/jwD/kgAAZssAbMwAaczb29vvAA3t7e2hoaHvCRVeXl4Acc7//fn/9ei+vr75+fkLCwubm5vR0dHh4eFMTEzMzMzzZmr7zc7E1/DU4/X/3Ln/r1OUuOWurq6BgYEqKiqPj4//+vJ6enr3nZ+GruHv9fx3pt+lw+nh7PhTkNgygdNun9z/0KD/ozH/48b/vXf/2bM/Pz//7Naqqqr0dHj6wsP83t//zZnyWV3xQkf+9PUYGBj/tGL4sLL2kJP95OX4pqguftJemNq0ze3/q0b/nyX/u3Gfv+fyU1fzbG/1gIPwMjhTU1P/xIc0NDT6xcfwJi3wOT9plvC+AAAMoElEQVR4nOWde1/aShPHE5EgHAKIolVa1Hq3asF6t7bea61ab7Vq2/f/Np4kBNhrkt0dEtbn99/5mIT9dmZnZmc3OYYRi9Z/1q83r0ZHRze3FmYa8fxmsprZGs0VSsVisa+vWCyVsrnN+1fO3aj3ZUsOLqpiIbsxm/TAuqfGWrZAEDdVym2sJz24Luk+W2IR+9hrSQ+vG5q9yjKt3FJh9PX5+EIuENmd27lPSQ8SVtWNbAiyq9fl4uuj/NmMKnud9EjhNEtmKa4KG0mPFUqzodMZoX4ltp4RYHY8vJ70eCE0G5ypKOV+Jj1ida2zazC+ilnti7PqqCCzQ32V9KBVtREtV2EqaJ6u6wVxZmdaa12QzuRkmPV28IZoEGupcJ/00OV1LTGhm6YuadtMkXRuVyVtY5l4tuqYOqupqeUid8vUW0kPX0oNwfKTUE5LU6/JRjHf1DouPBryUcxTMZs0gYSUZrQrHXO1Quj2TT2aNIKwfkZpBAYrO5M0hKhkVleESrr1yxrqhnZMrVk34RMEdGEhaQwxSS81UOkWymTXlLhyWoWyWcXKxJdeBfgn1cqkqWIhaRARKdbdbWmVqq9AprTj3zpt8hSBoIvFatIokdWAmdJ9Wvn3OkRp4kmj+D0LBq1RfTIDBq3RZgcgtD71NyB0cTNpmKgChO7L6ZK04AKZRkkLLmVp1AqGK050mtRQZWifThuYUAsOV1ldMjXU0tKVNk1/oCaCJ22Wl+sw7SJP+hxAAYxkfQVdItkW4KTWZs0BsJXVVlaXw6LVyCe8w6VNTQbp39qEb8g1hz6FqLEJ5t/FYtIskQUYyrRZUkPW3zl99qkVDkkSCl5yvFkZa2rlTVxoAQI4geFDc5onK7vbeze3ppXJO8rYlnm7M/+8vTsWLyaudbUjgwg0qzr5crzjgjoyW3L/w7YzGevmeS4x8nugWFag3sEcezbzdoeWlGVn8ub5djLgmzAOTva+3zzbAcRts9v5273d+Oe54plYDvScZYcRty2et+7m4qaGieB48X2XD7UyZvBM/nw3Xup7COoSaun5jACyD543n7/ESV0HCGaoe9+JM5uen9/Eae4tdWqkNfg5L8PcNPdtjLN7TZkaydOmyHymsHfic/K66rzuVGTbUs6NYO/FlsLuhV6gZkC3a+8dBUN7ss3YpvZMSalKab/DMiY9oxFjP8dF3dhUmNjFvtZj5tS8u6nMTWwuHv6ZEz50+7D7c9RSLFDWbWxF+fqmbE3aKcjOVae0T23FF8XvC3IzuxO8leNYi9qOj7pxLePjyAa1SpZOjNqYGRX3ceT9FTBox8NX4qM2Fgqih/6B6jGSeidGaKNaLwht+aAHJW/hoE37PE5q9/tzAhEti/SKbgChzfx2rNRGo56L6uTYlvwdJLSZD0vXQ1OLy0urq6tL78ZrEPsN1YVoIa2IbU7DFCctWTdBwIsj/Zj2l6YAwGc2OF9ZxJix7u82KLSZ/8wb2+JkP0sDg8yrxwde/uPo7TB58frCVS4wqBHMxi5E7d2RZbKRh5nEniZr1NW1t/zL+/vfMZ4/Wx91pjcbvJi9IjaxAFZZmDLHLLsFMThuPoFfPhV8OQvatff9RjFLpbFiKXtFb2wAJmpXlkX9wtBIMISjZeyGkIs50I6qs5+urwo5B91TIZvNXdVZu3bzsNBmhkxbIXZr6gNi7MWQa6k5TZCvz3yqr21trdUXfvK+inwMG8mcVSb+/IDZjGmxfUeYY4wHQ0fRF+BJbeaxhcdyRGbExf8LuXBIHfoN8KQ2rTvk6UuRmfv7l6JBD6gzw09qy+z0jt4JMLepg6HfghwcAS5PHP9ud0cjxTBEy+HQ+zCHZaAztWm3mqNDjEF/GxieGpyojQ8PsNim3NsCkJ8AglhTUB2jltoFOF14jkwhv1ujwnRzug62hXvKyBDgkSjopGXazedS+XafrLMnnrC/UwkYdxWQCNYSuH/7SYtk/sr47amOk3+glx5dhIZtJDiyvb1MMkPT6wpPrQDPKi67Cf0ZdqXVjGRVgnmC+/PjqwPLU8y/dBP6jQW86NhzHvoVZ2Yvm0PUTWhjDxh63nnmB2zAi6FjiB0auP52e8GD2HhH5MZV7SY0cKp2F1p4GJNcI3QXeg44axnGCzrcpfARMNVdaOj+CTEbZReDytDTHw9OTn5dHLJLOcWTJxQ0VkA+STIrQh89ptLpcqVSLqcrj0eMC0BX1c6cxtaU0qsEFejph3Q51VY5/ci4BrIAd6L3KoR3K0D/OElXUpjSqWnqKkhTW+fYAuuDLLM89EfUyr4q6Y/UdYCmtp6Nb8hgJZO0PPSP0zSF7Bn7gLwSsBa1j7EVlmzCkoWeJj27Q/2LvBYugGd2MWh+c74r0B/ZZm5SU+EMbFY762l0sCHN+SBJQB8EMDvUF8TlYGWZbRjoDtwyc3Bdgj4JZHaoD4kbgJoJbo8MDWTyc1oY+owTwlDqH/gtQIstt4eAlt7SBZkw9Nk/OlORqvwjboI5Puj2vdFGp3yeFoWOwExP6xWIAO7tcGDbOfKbT2LQkZgdaqIO3wZwcMs9WIU1i+TaJsLQD9GYU5XfxI0A3YSM2wutoaOVn9Qi0L9CY1jb1Jf4neqxrHkUAS8rpP1bAPoiMrNj6zP8XuUjVvae95xJARtBQH8XYKZLFNVzk/75OXyTlt/0BoI+EmF2qAlTKzq41/51NIGNd7LL0Gcp3hqDrTJZgz8r5a325vQ+NmDJRUdU6NOIgZtraqUI3jn+TJwdk2sZRYQWCWI+NDmrx8LfpA43NL7m6Pf325kaHF5aHWZv70WDnhZmdqjJhyi8fYmccyc2s3glSs0v0z+wdnKxB6xymEUndBP6knzMnWzewo5TfSOoWZYaGuj8/YVO59j9vNXaieiEdkWVZdLT2kZPU9HHbN5SxiZOH5E+jpc4nHW5UIZGTE01R8ekGmaWhb+IN9BP6ttyZ8u2WqMPmRETH4dm+b9h/JBjTpUPqEftykxr6rA36eAe99PS8vC75SXm8W/CFYaC/uhLyrk9U5NZS2q9Rb+3MsECCxCZzXFoZvyXdG4X+jv9tGdRavIkrKuQg96EqEiF/6Oxli1n0sypygnjeaKfSsiwXloRoaYDFb6zz9p6fC/r3CmmfxvGuRA15+2N6NSMOIWdRHthPF2mLOlAM/xbjDrPeo3BVY0HSYg1Y7HwzspYvyXKkrbK75kD3os8rwNelh/a53EiemL2GbDjDIzqPWgzI4Iq7AFvR/zUTfAHAsIPQLOzER686b8rRDFPdH3S1G6UKsXi+nZr9E8c2KaWOAddsX8sxt7ngUIU86DJpVZLKzehE9uywz/xQp/47SBzO2jYOo2e84LdElqVB+54t0NWmvZOpO8hDA2/MIhHFvnHmTFDM3YMTlSiWNPUrKTV1Nh8wMwW+d7HxNdVtDCdXA581RKvTOgwppSufGjOpPa0e8PBtvLzop+9mKiNL35dHK+FtYXxKMZI0g/Khk4xDmTg2BnKyy07M9+17yBM4IsVurECYGh2JYpqrPXVRY/X/fLeznH3Pm5CvBXAKEwADM3N1KhWdo/Pb03325rm/N7nLn7OZZyIeYx9IQhD05vVfHX7C6oTZAm3z7joFMLQqfSf7qJEFtlQZL6KpZyjfejgSBabqJqV2QRVLcZ8cdYccYvqJjLLctWqu62/cfMxRcznSXY6F9/S4Ijq+SchvCT5xtsMAkIWCd9dFOrdL9z9r0MoQ1PnTxJRJ3Svcl5ecwVSmDShybN0SciP3SOBm5yy/X0WNLWllYCc8nPyXYCNPSl2iTDonkjUUQ5q/AXz7h6BjiBA7+Z3jHpNl/+P0OptIgRaF/eGQ9YHGnJKc7Z2ek/ym7Ms6F5ZUIfoAmZV6UP3QhkaQe8B41hQ57un9A8SOpU0TURBIld6o3MSKrCmiStdMhYsdNC+Tg8JFjppmoiChC5TL5z2qCChe6JvEkWQ0BVt/veHcMyM46G9KphdLFe61KCG2iFBTAFHTnpOYG1BXZK0qz9A0JXTpEkEBBW+NZrRBtT+Bv39j54WUDdUk5W0LxD/1qYYa+mXetLSzLkNiAMn1NcgNJBqfVIh3xrXQaqtb72yVUtqVZlOpRgqlVWHrswKaauiLbP82dBySsv57Etu3ZF+0DBuI+J/YI4r1mcGNdNRRTBdp//p7Nq+zsK+uIYjl7U3c1PfU1Gx0+kLvWczoupFOgJ2JZ1+fDXIrs4uKsERzSH+d/mqkD0dnrgfOmYClx3ii1cQvlg6+/N4mk4j6BUX1wE+OHx9NkZVPTr8+Pj+9PffVOrv79P3F5d/Yrbw/wDE6ZOb0HHExwAAAABJRU5ErkJggg==" alt="profile">
+                <div>CJ</div>
+            </div>
+            <div class="user" onclick="selectUser('쿠팡')">
+                <img src="data:image/jpeg;base64,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" alt="profile">
+                <div>쿠팡</div>
+            </div>
         </div>
-    <input type="text" id="message-input" placeholder="메시지를 입력하세요...">
-    <button id="send-button">보내기</button>
+
+        <div class="chat-box">
+            <div class="chat-header" id="chat-header">선택된 사용자 없음</div>
+            <div class="chat-messages" id="chat-messages"></div>
+            <div class="chat-input">
+                <input type="text" id="message-input" placeholder="메시지를 입력하세요...">
+                <button onclick="sendMessage()">보내기</button>
+            </div>
+        </div>
+    </div>
 
     <script>
+        let currentUser = null;
 
+        function selectUser(name) {
+            currentUser = name;
+            document.getElementById('chat-header').innerText = name + ' 님과의 채팅';
+            document.getElementById('chat-messages').innerHTML = ''; // 메시지 초기화
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('message-input');
+            const message = input.value.trim();
+            if (!message || !currentUser) return;
+
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'message me';
+            msgDiv.innerText = message;
+
+            document.getElementById('chat-messages').appendChild(msgDiv);
+            input.value = '';
+            document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+        }
     </script>
-    <a href="{% url 'main_page' %}" class="back-to-main-btn">메인페이지로</a>
 </body>
 </html>

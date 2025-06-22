@@ -1,0 +1,110 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>같이해요 - 글 작성</title>
+    <link rel="stylesheet" href="{% static 'css/together_page_style.css' %}" />
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f2f5;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 700px;
+            margin: 50px auto;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        form label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 600;
+            color: #555;
+        }
+        form input[type="text"],
+        form textarea,
+        form select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        form textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        form button {
+            margin-top: 25px;
+            width: 100%;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 1.1em;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        form button:hover {
+            background-color: #0056b3;
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>새 글 작성하기</h1>
+
+    <form method="POST" action="">
+        {% csrf_token %}
+        <label for="id_title">제목</label>
+        <input type="text" id="id_title" name="title" required value="{{ form.title.value|default_if_none:'' }}">
+
+        <label for="id_content">내용</label>
+        <textarea id="id_content" name="content" required>{{ form.content.value|default_if_none:'' }}</textarea>
+
+        <label for="id_tags">태그 선택 (여러 개 선택 가능)</label>
+        <select id="id_tags" name="tags" multiple size="5">
+            {% for tag in tags %}
+                <option value="{{ tag.id }}"
+                    {% if tag.id|stringformat:"s" in form.tags.value|stringformat:"s" %}
+                        selected
+                    {% endif %}
+                >{{ tag.name }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- 새로 추가한 부분: 직접 태그 입력 -->
+        <label for="id_new_tags">새 태e그 입력 (콤마로 구분)</label>
+        <input type="text" id="id_new_tags" name="new_tags" placeholder="예) python, django, web">
+
+        <button type="submit">글 등록하기</button>
+    </form>
+
+    <a href="{% url 'together_page' %}" class="back-link">← 목록으로 돌아가기</a>
+</div>
+</body>
+</html>
